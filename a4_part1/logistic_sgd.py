@@ -3,6 +3,11 @@
 """
 import numpy as np
 
+def s(z):
+    return 1 / (1 + np.power(np.e, -z))
+
+def z_hat(xi, w):
+    return s(xi @ w)
 
 def logistic_sgd(X, z, num_epochs):
     """Performs L2-regularized logistic regression via Stochastic Gradient Descent 
@@ -17,6 +22,8 @@ def logistic_sgd(X, z, num_epochs):
         params: vector of parameters 
     """
     num_pts, num_vars = X.shape
+    print("num_pts: ", num_pts)
+    print("num_vars: ", num_vars)
 
     # Initial (random) estimate of params.
     mean = 0
@@ -32,8 +39,9 @@ def logistic_sgd(X, z, num_epochs):
         # Iterate over the points
         for i in range(num_pts):
             # Fill in here
-            # gradient = ...
-            # params = ...
+            z_hat_i = z_hat(X[i], params)
+            gradient = 2 * (z_hat_i - z[i]) * z_hat_i * (1 - z_hat_i) * X[i]
+            params = params - (1 / num_epochs) * gradient
             pass
     return params
 

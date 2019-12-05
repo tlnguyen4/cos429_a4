@@ -34,34 +34,46 @@ def fully_connected_backprop(dLdU, x, W):
 
     #U = (W^T)x + b
     #U is the output of the fully connected layer thus, the output of the weights applied to x?
-    print("fully_connected_backprop")
-    print("x.shape")
-    print(x.shape)
-    print("W.shape")
-    print(W.shape)
-    U = x@W
+    # print("fully_connected_backprop")
+    # print("x.shape")
+    # print(x.shape)
+    # print("W.shape")
+    # print(W.shape)
+   
     dUdx = W
 
-    print("fully_connected_backprop")
-    print("dUdx.shape")
-    print(dUdx.shape)
-    print("dLdu.shape")
-    print(dLdU.shape)
+    # print("\n\ndUdx.shape")
+    # print(dUdx.shape)
+    # print("dLdu.shape")
+    # print(dLdU.shape)
 
-    dLdX = dUdx @ dLdU
+    dLdX = np.transpose(dUdx@np.transpose(dLdU))
 
     #no idea why we transpose but whatever
     dUdw = np.transpose(x)
-    # print("dUdw.shape")
+    # print("\n\ndUdw.shape")
     # print(dUdw.shape)
     # print("dLdu.shape")
     # print(dLdU.shape)
 
-    dLdW =  dUdw @ dLdU
+    dLdW =  np.multiply(dUdw, dLdU)
+    
 
 
-    length, _ = U.shape
-    dUdb = np.zeros(length) + 1 
-    dLdB = dUdb @ dLdU
+    dUdb = np.ones((1,W.shape[1]))  
+    # print("\n\ndUdb.shape")
+    # print(dUdb.shape)
+    # print("dLdu.shape")
+    # print(dLdU.shape)
+
+   
+    dLdB = np.multiply(dUdb,dLdU)
+
+    
+
+    # print("\n\n\n")
+    # print(dLdX.shape)
+    # print(dLdW.shape) 
+    # print(dLdB.shape)
 
     return dLdX, dLdW, dLdB

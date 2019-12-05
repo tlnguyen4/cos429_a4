@@ -16,14 +16,9 @@ def relu_backprop(dLdy, x):
     # TODO: Implement me!
 
     #derivate of reul is 1 for x > 0, 0 otherwise. Undefined for x = 0(might be buggos here) 
-    print("\n\n\ndYdx\n\n\n")
     dYdx = (x > 0)
-    print(dYdx.shape)
-    print("\n\ndLdy\n\n\n")
-    print(dLdy.shape)
     # by calculus, yee
     dLdX = np.multiply(dYdx, dLdy)
-    print(dLdX.shape)
-    print("FML")
+
 
     return dLdX

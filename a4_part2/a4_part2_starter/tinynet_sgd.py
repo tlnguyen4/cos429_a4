@@ -17,7 +17,7 @@ from fully_connected import fully_connected
 from logistic import logistic
 from relu import relu
 # from fully_connected_backprop import fully_connected_backprop
-from fully_connected_backprop_gt import fully_connected_backprop
+from fully_connected_backprop import fully_connected_backprop
 from logistic_backprop import logistic_backprop
 from relu_backprop import relu_backprop
 
@@ -68,13 +68,14 @@ def tinynet_sgd(X, z, layers, epoch_count):
             # at activations[i].
             z_hat = full_forward_pass(X[i:(i + 1), :], net, activations)
 
-            print("zhat memes\n")
-            print(z_hat)
-            print("\n\n\n")
+            # print("zhat memes\n")
+            # print(z_hat)
+            # print("\n\n\n")
 
-            print("z memes\n")
-            print(z[i])
-            print("\n\n\n")
+            # print("z memes\n")
+            # print(z[i])
+            # print("\n\n\n")
+
             # Backwards pass to evaluate gradients at each layer and update
             # weights. First compute dL/dz_hat here, then use the backprop
             # functions to get the gradients for earlier weights as you
@@ -157,8 +158,8 @@ def full_backward_pass(example, net, activations,  z_hat, z):
     dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, relu(activations[hidden_layer_count]), net['final-W'])
     gradientDict['final-W'] = dLdW
     gradientDict['final-b'] = dLdB
-    print(dLdX.shape)
-    print(activations[hidden_layer_count].shape)
+    # print(dLdX.shape)
+    # print(activations[hidden_layer_count].shape)
     dLdX = relu_backprop(dLdX, activations[hidden_layer_count])
     for i in range(hidden_layer_count, 2, -1):
         W = net['hidden-#{}-W'.format(i)]
@@ -174,7 +175,7 @@ def full_backward_pass(example, net, activations,  z_hat, z):
     # x=x[:,0]
     # x = np.transpose(x)
     # dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, x, W_1)
-    print("\n\n\n\nSUPREME DANKNESS\n\n")
+    # print("\n\n\n\nSUPREME DANKNESS\n\n")
 
     dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, x, W_1)
     gradientDict['hidden-#1-W'] = dLdW

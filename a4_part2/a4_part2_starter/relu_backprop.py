@@ -1,3 +1,4 @@
+import numpy as np
 def relu_backprop(dLdy, x):
     # Backpropogates the partial derivatives of loss with respect to the output
     # of the relu function to compute the partial derivatives of the loss with
@@ -15,8 +16,14 @@ def relu_backprop(dLdy, x):
     # TODO: Implement me!
 
     #derivate of reul is 1 for x > 0, 0 otherwise. Undefined for x = 0(might be buggos here) 
+    print("\n\n\ndYdx\n\n\n")
     dYdx = (x > 0)
+    print(dYdx.shape)
+    print("\n\ndLdy\n\n\n")
+    print(dLdy.shape)
     # by calculus, yee
-    dLdX = dYdx @ dLdy
+    dLdX = np.multiply(dYdx, dLdy)
+    print(dLdX.shape)
+    print("FML")
 
     return dLdX

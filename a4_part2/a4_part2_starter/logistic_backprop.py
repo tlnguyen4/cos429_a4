@@ -22,7 +22,7 @@ def logistic_backprop(dLdy, y):
     #we need to compute the derivative dy/dx to get the desired result,
     # this is just the derivative of the sigmoid function apllied to x, which is 
     # logistic(x)(1 - logistic(x))
-    dYdX = y@(1-y)
-    dLdX = dYdX@dLdy 
+    dYdX = y*(1-y)
+    dLdX = dYdX*dLdy 
 
     return dLdX

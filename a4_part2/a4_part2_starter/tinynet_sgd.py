@@ -16,7 +16,8 @@ import numpy as np
 from fully_connected import fully_connected
 from logistic import logistic
 from relu import relu
-from fully_connected_backprop import fully_connected_backprop
+# from fully_connected_backprop import fully_connected_backprop
+from fully_connected_backprop_gt import fully_connected_backprop
 from logistic_backprop import logistic_backprop
 from relu_backprop import relu_backprop
 
@@ -67,6 +68,13 @@ def tinynet_sgd(X, z, layers, epoch_count):
             # at activations[i].
             z_hat = full_forward_pass(X[i:(i + 1), :], net, activations)
 
+            print("zhat memes\n")
+            print(z_hat)
+            print("\n\n\n")
+
+            print("z memes\n")
+            print(z[i])
+            print("\n\n\n")
             # Backwards pass to evaluate gradients at each layer and update
             # weights. First compute dL/dz_hat here, then use the backprop
             # functions to get the gradients for earlier weights as you
@@ -83,10 +91,9 @@ def tinynet_sgd(X, z, layers, epoch_count):
             # activations[hidden_layer_count+1] is the final output before
             # it is squished with the logistic function.
 
-            # TODO: Implement me!
-            dLdzhat = 2*(z_hat - z)
-            gradientDict = full_backward_pass(X[i:(i + 1), :], net, activations, dLdzhat, z_hat)
-            for parameter in net:
+            # TODO: Implement me! 
+            gradientDict = full_backward_pass(X[i:(i + 1), :], net, activations, z_hat, z[i])
+            for parameter in gradientDict:
                 net[parameter] = net[parameter] - gradientDict[parameter]*learning_rate
             
     return net
@@ -125,7 +132,7 @@ def full_forward_pass(example, net, activations):
 
 
 # Full forward pass, caching intermediate
-def full_backward_pass(example, net, activations, dLdzhat, z_hat):
+def full_backward_pass(example, net, activations,  z_hat, z):
     hidden_layer_count = net['hidden_layer_count']
     x = example
     W_1 = net['hidden-#1-W']
@@ -133,11 +140,25 @@ def full_backward_pass(example, net, activations, dLdzhat, z_hat):
 
     
     gradientDict= {}
-
+    dLdzhat = 2*(z_hat - z)
+    # print(dLdzhat)
     dLdX = logistic_backprop(dLdzhat, z_hat)
+    # print("\n\n\nFUCK YO SHIT\n\n\n")
+    # print(dLdX)
+    
+    # print("\n\nDanker Memes")
+    # print("dLdX,.shape")
+    # print(dLdX.shape)
+    # print("relu(activations[hidden_layer_count]).shape")
+    # print(relu(activations[hidden_layer_count]).shape)
+    # print("net['final-W'].shape")
+    # print(net['final-W'].shape)
+
     dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, relu(activations[hidden_layer_count]), net['final-W'])
     gradientDict['final-W'] = dLdW
     gradientDict['final-b'] = dLdB
+    print(dLdX.shape)
+    print(activations[hidden_layer_count].shape)
     dLdX = relu_backprop(dLdX, activations[hidden_layer_count])
     for i in range(hidden_layer_count, 2, -1):
         W = net['hidden-#{}-W'.format(i)]
@@ -152,6 +173,9 @@ def full_backward_pass(example, net, activations, dLdzhat, z_hat):
     x = activations[0]
     # x=x[:,0]
     # x = np.transpose(x)
+    # dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, x, W_1)
+    print("\n\n\n\nSUPREME DANKNESS\n\n")
+
     dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, x, W_1)
     gradientDict['hidden-#1-W'] = dLdW
     gradientDict['hidden-#1-b'] = dLdB

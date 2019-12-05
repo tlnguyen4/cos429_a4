@@ -1,3 +1,4 @@
+import numpy as np
 def fully_connected_backprop(dLdU, x, W):
     # Computes the derivates of the loss with respect to the input x,
     # weights W, and biases b.
@@ -28,5 +29,39 @@ def fully_connected_backprop(dLdU, x, W):
     #   Each element should contain the partial derivative of L with respect to
     #   the corresponding value of b.
     # TODO: Implement me!
-    raise NotImplementedError('Unimplemented: fully_connected_backprop!')
+
+
+
+    #U = (W^T)x + b
+    #U is the output of the fully connected layer thus, the output of the weights applied to x?
+    print("fully_connected_backprop")
+    print("x.shape")
+    print(x.shape)
+    print("W.shape")
+    print(W.shape)
+    U = x@W
+    dUdx = W
+
+    print("fully_connected_backprop")
+    print("dUdx.shape")
+    print(dUdx.shape)
+    print("dLdu.shape")
+    print(dLdU.shape)
+
+    dLdX = dUdx @ dLdU
+
+    #no idea why we transpose but whatever
+    dUdw = np.transpose(x)
+    # print("dUdw.shape")
+    # print(dUdw.shape)
+    # print("dLdu.shape")
+    # print(dLdU.shape)
+
+    dLdW =  dUdw @ dLdU
+
+
+    length, _ = U.shape
+    dUdb = np.zeros(length) + 1 
+    dLdB = dUdb @ dLdU
+
     return dLdX, dLdW, dLdB

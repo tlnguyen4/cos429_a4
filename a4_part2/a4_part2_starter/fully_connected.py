@@ -1,3 +1,4 @@
+import tinynet_sgd 
 # The forward layer for a hidden neuron. 
 def fully_connected(x, W, b):
     # x: a row vector with shape [1, feature_count].
@@ -6,5 +7,5 @@ def fully_connected(x, W, b):
     # return: a row vector with shape [1, neuron_count] containing the network
     # responses at the hidden layer.
     # TODO: Implement me!
-    raise NotImplementedError('Unimplemented: fully_connected()!')
-    return
+   
+    return (x@W + b)

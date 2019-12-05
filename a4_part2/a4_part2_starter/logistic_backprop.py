@@ -1,3 +1,5 @@
+import numpy as np 
+from logistic import logistic
 def logistic_backprop(dLdy, y):
     # Computes the partial derivative of the loss with respect to the input to
     # the logistic function, given it with respect to the output.
@@ -16,5 +18,11 @@ def logistic_backprop(dLdy, y):
     # into the derivative.
     #
     # TODO: Implement me!
-    raise NotImplementedError('Unimplemented: logistic_backprop()!')
+   
+    #we need to compute the derivative dy/dx to get the desired result,
+    # this is just the derivative of the sigmoid function apllied to x, which is 
+    # logistic(x)(1 - logistic(x))
+    dYdX = y@(1-y)
+    dLdX = dYdX@dLdy 
+
     return dLdX

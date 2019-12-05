@@ -18,6 +18,8 @@ def tinynet_predict(X, net):
     # hidden_layer_count = net['hidden_layer_count']
     example_count, _ = X.shape
     z_hat = np.zeros(example_count)
+    # error memes here
+   
     for ei in range(example_count):
         x = X[ei, :]
         # Set z_hat[ei] by propogating x through the network.
@@ -25,6 +27,8 @@ def tinynet_predict(X, net):
         # here is already implemented in the full_forward_pass() function
         # in tinynet_sgd.py
         # TODO: Implement me!
-        raise NotImplementedError('Unimplemented: tinynet_predict!')
+        activations = {}
+        activations[0] = x 
+        z_hat[ei] = full_forward_pass(x, net, activations)
     z = (z_hat > 0.5)
     return z

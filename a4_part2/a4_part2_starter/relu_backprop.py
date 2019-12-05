@@ -13,5 +13,10 @@ def relu_backprop(dLdy, x):
     # [dLdX]: a row vector of doubles with shape [1, N]. Should contain the
     #   partial derivative of the loss with respect to each element of x.
     # TODO: Implement me!
-    raise NotImplementedError('Unimplemented: relu_backprop()!')
+
+    #derivate of reul is 1 for x > 0, 0 otherwise. Undefined for x = 0(might be buggos here) 
+    dYdx = (x > 0)
+    # by calculus, yee
+    dLdX = dYdx @ dLdy
+
     return dLdX

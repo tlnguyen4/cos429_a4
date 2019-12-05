@@ -84,8 +84,11 @@ def tinynet_sgd(X, z, layers, epoch_count):
             # it is squished with the logistic function.
 
             # TODO: Implement me!
-
-            raise NotImplementedError('Unimplemented: tinynet_sgd!')
+            dLdzhat = 2*(z_hat - z)
+            gradientDict = full_backward_pass(X[i:(i + 1), :], net, activations, dLdzhat, z_hat)
+            for parameter in net:
+                net[parameter] = net[parameter] - gradientDict[parameter]*learning_rate
+            
     return net
 
 
@@ -96,7 +99,13 @@ def full_forward_pass(example, net, activations):
 
     W_1 = net['hidden-#1-W']
     b_1 = net['hidden-#1-b']
-    activations[1] = fully_connected(x, W_1, b_1)
+    # print("x.shape")
+    # print(x.shape)
+    # print("W_1.shape")
+    # print(W_1.shape)
+    # print("b_1.shape")
+    # print(b_1.shape)
+    activations[1] = fully_connected(x, W_1, b_1) 
     for i in range(2, hidden_layer_count + 1):
         W = net['hidden-#{}-W'.format(i)]
         b = net['hidden-#{}-b'.format(i)]
@@ -112,6 +121,43 @@ def full_forward_pass(example, net, activations):
     activations[hidden_layer_count + 1] = x
     z_hat = logistic(x)
     return z_hat
+
+
+
+# Full forward pass, caching intermediate
+def full_backward_pass(example, net, activations, dLdzhat, z_hat):
+    hidden_layer_count = net['hidden_layer_count']
+    x = example
+    W_1 = net['hidden-#1-W']
+    b_1 = net['hidden-#1-b']
+
+    
+    gradientDict= {}
+
+    dLdX = logistic_backprop(dLdzhat, z_hat)
+    dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, relu(activations[hidden_layer_count]), net['final-W'])
+    gradientDict['final-W'] = dLdW
+    gradientDict['final-b'] = dLdB
+    dLdX = relu_backprop(dLdX, activations[hidden_layer_count])
+    for i in range(hidden_layer_count, 2, -1):
+        W = net['hidden-#{}-W'.format(i)]
+        b = net['hidden-#{}-b'.format(i)]
+        # Apply the ith hidden layer and relu and update x.
+        dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, relu(activations[i-1]), W)
+        gradientDict['hidden-#{}-W'.format(i)] = dLdW
+        gradientDict['hidden-#{}-b'.format(i)] = dLdB
+        dLdX = relu_backprop(dLdx, activations[i - 1])
+
+    W_1 = net['hidden-#1-W']
+    x = activations[0]
+    # x=x[:,0]
+    # x = np.transpose(x)
+    dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, x, W_1)
+    gradientDict['hidden-#1-W'] = dLdW
+    gradientDict['hidden-#1-b'] = dLdB
+ 
+    return gradientDict
+
 
 
 def initialize_net(layers, feature_count):
@@ -144,3 +190,7 @@ def initialize_net(layers, feature_count):
     net['final-W'] = layer_sigma * np.random.normal(0, 1, (layer_size, 1))
     net['final-b'] = np.zeros((1, 1))
     return net
+
+
+
+

@@ -35,7 +35,7 @@ def tinynet_sgd(X, z, layers, epoch_count):
     for ep in range(1, epoch_count + 1):
         # josh memes here
         # print('Starting epoch #{} of #{}...\n'.format(ep, epoch_count))
-        learning_rate = 0.0001 / ep
+        learning_rate = 0.1 / ep
         # Randomly shuffle the examples so they aren't applied in the
         # same order every epoch.
         permutation = np.random.permutation(example_count)
@@ -95,34 +95,6 @@ def tinynet_sgd(X, z, layers, epoch_count):
                 net[parameter] = net[parameter] - gradientDict[parameter]*learning_rate
             
     return net
-
-
-# Full forward pass, caching intermediate
-def full_forward_pass(example, net, activations):
-    hidden_layer_count = net['hidden_layer_count']
-    x = example
-
-    W_1 = net['hidden-#1-W']
-    b_1 = net['hidden-#1-b']
-    activations[1] = fully_connected(x, W_1, b_1) 
-    for i in range(2, hidden_layer_count + 1):
-        W = net['hidden-#{}-W'.format(i)]
-        b = net['hidden-#{}-b'.format(i)]
-        # Apply the ith hidden layer and relu and update x.
-        activations[i] = fully_connected(relu(activations[i - 1]), W, b)
-
-    W = net['final-W']
-    b = net['final-b']
-    # Apply the final layer, and then the sigmoid to get zhat.
-    # Ignore the unused warning for activations - it is a handle object, so
-    # it is pass by reference.
-    x = fully_connected(relu(activations[hidden_layer_count]), W, b)
-    activations[hidden_layer_count + 1] = x
-    z_hat = logistic(x)
-    return z_hat
-
-
-
 # Full backward pass, stores gradients corresponding to each network paramter in a dict called gradientDict
 # parameter names will map to the corresponding gradient for the update. 
 # Effectively goes in reverse order of full forward pass, finding the gradient at each step by chain rule
@@ -167,6 +139,34 @@ def full_backward_pass(example, net, activations,  z_hat, z):
     gradientDict['hidden-#1-b'] = dLdB
  
     return gradientDict
+
+# Full forward pass, caching intermediate
+def full_forward_pass(example, net, activations):
+    hidden_layer_count = net['hidden_layer_count']
+    x = example
+
+    W_1 = net['hidden-#1-W']
+    b_1 = net['hidden-#1-b']
+    activations[1] = fully_connected(x, W_1, b_1) 
+    for i in range(2, hidden_layer_count + 1):
+        W = net['hidden-#{}-W'.format(i)]
+        b = net['hidden-#{}-b'.format(i)]
+        # Apply the ith hidden layer and relu and update x.
+        activations[i] = fully_connected(relu(activations[i - 1]), W, b)
+
+    W = net['final-W']
+    b = net['final-b']
+    # Apply the final layer, and then the sigmoid to get zhat.
+    # Ignore the unused warning for activations - it is a handle object, so
+    # it is pass by reference.
+    x = fully_connected(relu(activations[hidden_layer_count]), W, b)
+    activations[hidden_layer_count + 1] = x
+    z_hat = logistic(x)
+    return z_hat
+
+
+
+
 
 
 

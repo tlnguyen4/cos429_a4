@@ -68,13 +68,6 @@ def tinynet_sgd(X, z, layers, epoch_count):
             # at activations[i].
             z_hat = full_forward_pass(X[i:(i + 1), :], net, activations)
 
-            # print("zhat memes\n")
-            # print(z_hat)
-            # print("\n\n\n")
-
-            # print("z memes\n")
-            # print(z[i])
-            # print("\n\n\n")
 
             # Backwards pass to evaluate gradients at each layer and update
             # weights. First compute dL/dz_hat here, then use the backprop
@@ -93,7 +86,10 @@ def tinynet_sgd(X, z, layers, epoch_count):
             # it is squished with the logistic function.
 
             # TODO: Implement me! 
+
+            #calling helper function to peform backward pass
             gradientDict = full_backward_pass(X[i:(i + 1), :], net, activations, z_hat, z[i])
+            #iterate through parameters, subtract corresponding gradients 
             for parameter in gradientDict:
                 net[parameter] = net[parameter] - gradientDict[parameter]*learning_rate
             
@@ -107,12 +103,6 @@ def full_forward_pass(example, net, activations):
 
     W_1 = net['hidden-#1-W']
     b_1 = net['hidden-#1-b']
-    # print("x.shape")
-    # print(x.shape)
-    # print("W_1.shape")
-    # print(W_1.shape)
-    # print("b_1.shape")
-    # print(b_1.shape)
     activations[1] = fully_connected(x, W_1, b_1) 
     for i in range(2, hidden_layer_count + 1):
         W = net['hidden-#{}-W'.format(i)]
@@ -132,52 +122,46 @@ def full_forward_pass(example, net, activations):
 
 
 
-# Full forward pass, caching intermediate
+# Full backward pass, stores gradients corresponding to each network paramter in a dict called gradientDict
+# parameter names will map to the corresponding gradient for the update. 
+# Effectively goes in reverse order of full forward pass, finding the gradient at each step by chain rule
 def full_backward_pass(example, net, activations,  z_hat, z):
     hidden_layer_count = net['hidden_layer_count']
-    x = example
-    W_1 = net['hidden-#1-W']
-    b_1 = net['hidden-#1-b']
-
-    
+    x = example 
+    #create dictionary for storing gradients, dictionary is returned at end of function
     gradientDict= {}
-    dLdzhat = 2*(z_hat - z)
-    # print(dLdzhat)
-    dLdX = logistic_backprop(dLdzhat, z_hat)
-    # print("\n\n\nFUCK YO SHIT\n\n\n")
-    # print(dLdX)
     
-    # print("\n\nDanker Memes")
-    # print("dLdX,.shape")
-    # print(dLdX.shape)
-    # print("relu(activations[hidden_layer_count]).shape")
-    # print(relu(activations[hidden_layer_count]).shape)
-    # print("net['final-W'].shape")
-    # print(net['final-W'].shape)
+    #get the gradient of the loss with respect to the prediction, i.e. gradient of the last function applied
+    dLdzhat = 2*(z_hat - z)
+    
+    # Computes the partial derivative of the loss with respect to the input to
+    # the logistic function, given it with respect to the output, which was dL/dz_hat.
+    dLdX = logistic_backprop(dLdzhat, z_hat)
 
+    #get parameter gradients   
     dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, relu(activations[hidden_layer_count]), net['final-W'])
+    #store parameter gradients
     gradientDict['final-W'] = dLdW
     gradientDict['final-b'] = dLdB
-    # print(dLdX.shape)
-    # print(activations[hidden_layer_count].shape)
+    
     dLdX = relu_backprop(dLdX, activations[hidden_layer_count])
     for i in range(hidden_layer_count, 2, -1):
         W = net['hidden-#{}-W'.format(i)]
         b = net['hidden-#{}-b'.format(i)]
-        # Apply the ith hidden layer and relu and update x.
+       
+        #get parameter gradients 
         dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, relu(activations[i-1]), W)
+        #store parameter gradients
         gradientDict['hidden-#{}-W'.format(i)] = dLdW
         gradientDict['hidden-#{}-b'.format(i)] = dLdB
-        dLdX = relu_backprop(dLdx, activations[i - 1])
+        #get intermediate input gradient
+        dLdX = relu_backprop(dLdX, activations[i - 1])
 
     W_1 = net['hidden-#1-W']
     x = activations[0]
-    # x=x[:,0]
-    # x = np.transpose(x)
-    # dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, x, W_1)
-    # print("\n\n\n\nSUPREME DANKNESS\n\n")
-
+    #get parameter gradients 
     dLdX, dLdW, dLdB = fully_connected_backprop(dLdX, x, W_1)
+    #store parameter gradients
     gradientDict['hidden-#1-W'] = dLdW
     gradientDict['hidden-#1-b'] = dLdB
  

@@ -15,10 +15,9 @@ def relu_backprop(dLdy, x):
     #   partial derivative of the loss with respect to each element of x.
     # TODO: Implement me!
 
-    #derivate of reul is 1 for x > 0, 0 otherwise. Undefined for x = 0(might be buggos here) 
+    #derivate of relu is 1 for x > 0, 0 otherwise. Undefined for x = 0 
     dYdx = (x > 0)
-    # by calculus, yee
+    #chain rule using hadamard product to get entry-wise partial derivative
     dLdX = np.multiply(dYdx, dLdy)
-
 
     return dLdX

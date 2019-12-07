@@ -17,7 +17,7 @@ from fully_connected import fully_connected
 from logistic import logistic
 from relu import relu
 # from fully_connected_backprop import fully_connected_backprop
-from fully_connected_backprop import fully_connected_backprop
+from fully_connected_backprop_gt import fully_connected_backprop
 from logistic_backprop import logistic_backprop
 from relu_backprop import relu_backprop
 
@@ -33,8 +33,9 @@ def tinynet_sgd(X, z, layers, epoch_count):
 
     # For each epoch, train on all data examples.
     for ep in range(1, epoch_count + 1):
-        print('Starting epoch #{} of #{}...\n'.format(ep, epoch_count))
-        learning_rate = 0.1 / ep
+        # josh memes here
+        # print('Starting epoch #{} of #{}...\n'.format(ep, epoch_count))
+        learning_rate = 0.0001 / ep
         # Randomly shuffle the examples so they aren't applied in the
         # same order every epoch.
         permutation = np.random.permutation(example_count)
@@ -145,7 +146,7 @@ def full_backward_pass(example, net, activations,  z_hat, z):
     gradientDict['final-b'] = dLdB
     
     dLdX = relu_backprop(dLdX, activations[hidden_layer_count])
-    for i in range(hidden_layer_count, 2, -1):
+    for i in range(hidden_layer_count, 1, -1):
         W = net['hidden-#{}-W'.format(i)]
         b = net['hidden-#{}-b'.format(i)]
        

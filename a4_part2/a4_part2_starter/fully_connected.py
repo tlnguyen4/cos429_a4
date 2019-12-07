@@ -7,5 +7,4 @@ def fully_connected(x, W, b):
     # return: a row vector with shape [1, neuron_count] containing the network
     # responses at the hidden layer.
     # TODO: Implement me!
-   
     return (x@W + b)

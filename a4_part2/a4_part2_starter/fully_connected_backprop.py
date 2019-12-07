@@ -30,50 +30,25 @@ def fully_connected_backprop(dLdU, x, W):
     #   the corresponding value of b.
     # TODO: Implement me!
 
-
-
-    #U = (W^T)x + b
-    #U is the output of the fully connected layer thus, the output of the weights applied to x?
-    # print("fully_connected_backprop")
-    # print("x.shape")
-    # print(x.shape)
-    # print("W.shape")
-    # print(W.shape)
-   
+    #U = Wx + b
+    #U is the output of the fully connected layer thus, the output of the weights applied to x
+    # we take the derivative with respect to x
     dUdx = W
 
-    # print("\n\ndUdx.shape")
-    # print(dUdx.shape)
-    # print("dLdu.shape")
-    # print(dLdU.shape)
-
+    #get derivative of loss with respect to x
     dLdX = np.transpose(dUdx@np.transpose(dLdU))
 
-    #no idea why we transpose but whatever
+    #derivative with respect to x. Have to transpose for hadamard product with dLdU
     dUdw = np.transpose(x)
-    # print("\n\ndUdw.shape")
-    # print(dUdw.shape)
-    # print("dLdu.shape")
-    # print(dLdU.shape)
 
-    dLdW =  np.multiply(dUdw, dLdU)
-    
-
-
-    dUdb = np.ones((1,W.shape[1]))  
-    # print("\n\ndUdb.shape")
-    # print(dUdb.shape)
-    # print("dLdu.shape")
-    # print(dLdU.shape)
-
+    #take hadamard product to get dLdw
+    dLdW =  np.multiply(dUdw, dLdU)    
    
+    # each b entry is just a constant, so we just need a matrix of 1's of the correct size
+    #technically not even necessary to directly compute dUdb, but we do it for sake of clarity 
+    dUdb = np.ones((1,W.shape[1]))  
+
+    #take hadamard product
     dLdB = np.multiply(dUdb,dLdU)
-
-    
-
-    # print("\n\n\n")
-    # print(dLdX.shape)
-    # print(dLdW.shape) 
-    # print(dLdB.shape)
 
     return dLdX, dLdW, dLdB
